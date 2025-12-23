@@ -1,0 +1,55 @@
+<!-- views/stock_picking_views.xml -->
+<odoo>
+    <data>
+        
+        <!-- Extend stock.picking form view -->
+        <record id="view_picking_form_custom" model="ir.ui.view">
+            <field name="name">stock.picking.form.custom</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form"/>
+            <field name="arch" type="xml">
+                
+                <!-- Add fields to header -->
+                <xpath expr="//div[hasclass('o_picking_details')]" position="inside">
+                    <div class="col">
+                        <label for="shipping_priority" string="Priority"/>
+                        <field name="shipping_priority" widget="radio"/>
+                    </div>
+                    <div class="col">
+                        <label for="packing_station_id" string="Packing Station"/>
+                        <field name="packing_station_id" widget="many2one"/>
+                    </div>
+                </xpath>
+                
+                <!-- Add new page to notebook -->
+                <xpath expr="//sheet//notebook" position="inside">
+                    <page string="Custom Operations" name="custom_operations">
+                        <group>
+                            <group string="Quality Control">
+                                <field name="quality_check_required"/>
+                                <field name="quality_status"/>
+                            </group>
+                            <group string="Shipping">
+                                <field name="estimated_delivery_date"/>
+                                <field name="custom_carrier_instructions"/>
+                            </group>
+                        </group>
+                    </page>
+                </xpath>
+                
+                <!-- Add custom button -->
+                <xpath expr="//header//button[@name='action_assign']" position="after">
+                    <button 
+                        name="action_start_packing" 
+                        type="object"
+                        string="Start Packing"
+                        class="btn-primary"
+                        attrs="{'invisible': [('state', '!=', 'assigned')]}"
+                    />
+                </xpath>
+                
+            </field>
+        </record>
+        
+    </data>
+</odoo>

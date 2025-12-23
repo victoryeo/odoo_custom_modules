@@ -1,0 +1,45 @@
+<odoo>
+    <data noupdate="1">
+        
+        <!-- Demo products with custom fields -->
+        <record id="demo_product_frozen_fish" model="product.product">
+            <field name="name">Frozen Salmon Fillet</field>
+            <field name="default_code">FROZ-SAL-001</field>
+            <field name="type">product</field>
+            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="list_price">25.99</field>
+            <field name="standard_price">18.50</field>
+            <field name="storage_temperature">frozen</field>
+            <field name="shelf_life_days">180</field>
+            <field name="minimum_stock_level">50</field>
+            <field name="warehouse_notes">Keep at -18°C or below. Thaw in refrigerator before use.</field>
+        </record>
+        
+        <record id="demo_product_cool_milk" model="product.product">
+            <field name="name">Organic Milk</field>
+            <field name="default_code">COOL-MIL-001</field>
+            <field name="type">product</field>
+            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="list_price">4.99</field>
+            <field name="standard_price">3.20</field>
+            <field name="storage_temperature">cool</field>
+            <field name="shelf_life_days">14</field>
+            <field name="minimum_stock_level">100</field>
+            <field name="warehouse_notes">Keep refrigerated at 2-8°C. Check expiration dates daily.</field>
+        </record>
+        
+        <record id="demo_product_ambient_rice" model="product.product">
+            <field name="name">Jasmine Rice 5kg</field>
+            <field name="default_code">AMB-RIC-001</field>
+            <field name="type">product</field>
+            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="list_price">12.99</field>
+            <field name="standard_price">8.75</field>
+            <field name="storage_temperature">ambient</field>
+            <field name="shelf_life_days">365</field>
+            <field name="minimum_stock_level">200</field>
+            <field name="warehouse_notes">Store in dry, cool place. Keep away from moisture.</field>
+        </record>
+        
+    </data>
+</odoo>

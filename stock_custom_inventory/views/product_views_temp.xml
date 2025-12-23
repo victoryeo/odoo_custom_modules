@@ -1,0 +1,30 @@
+<!-- views/product_views_temporary.xml -->
+<odoo>
+    <data>
+        <record id="view_product_form_custom_temporary" model="ir.ui.view">
+            <field name="name">product.product.form.custom.temporary</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_normal_form_view"/>
+            <field name="arch" type="xml">
+                
+                <!-- Add a simple test section with existing fields -->
+                <xpath expr="//field[@name='description']" position="after">
+                    <group string="Custom Inventory Module (Test)" name="custom_inventory_test">
+                        <div class="alert alert-success">
+                            <strong>✅ Custom Module Installed Successfully!</strong>
+                            <br/>Your custom inventory module is working.
+                        </div>
+                        
+                        <!-- Show existing fields as a test -->
+                        <group string="Test Section">
+                            <field name="type" widget="radio"/>
+                            <field name="categ_id"/>
+                            <field name="sale_ok" widget="boolean_button"/>
+                            <field name="purchase_ok" widget="boolean_button"/>
+                        </group>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

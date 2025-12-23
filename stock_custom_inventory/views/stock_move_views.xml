@@ -1,0 +1,122 @@
+<odoo>
+    <data>
+        
+        <!-- Extend stock.move form view -->
+        <record id="view_stock_move_form_custom" model="ir.ui.view">
+            <field name="name">stock.move.form.custom</field>
+            <field name="model">stock.move</field>
+            <field name="inherit_id" ref="stock.view_move_form"/>
+            <field name="arch" type="xml">
+                
+                <!-- Add quality section -->
+                <xpath expr="//field[@name='product_uom_qty']" position="after">
+                    <group string="🔍 Quality Control" name="quality_control">
+                        <group>
+                            <field name="quality_check_required" widget="boolean_button"/>
+                            <field name="quality_status" widget="selection_badge" 
+                                   options="{'color_field': 'quality_status_color'}"/>
+                            <field name="quality_check_date"/>
+                        </group>
+                        <group>
+                            <field name="quality_check_notes" placeholder="Enter quality inspection notes..."/>
+                        </group>
+                    </group>
+                </xpath>
+                
+                <!-- Add quality buttons to header -->
+                <xpath expr="//header" position="inside">
+                    <button 
+                        name="action_mark_quality_passed" 
+                        type="object"
+                        string="✅ Pass"
+                        class="btn-success"
+                        attrs="{'invisible': [('quality_status', '!=', 'pending')]}"
+                    />
+                    <button 
+                        name="action_mark_quality_failed" 
+                        type="object"
+                        string="❌ Fail"
+                        class="btn-danger"
+                        attrs="{'invisible': [('quality_status', '!=', 'pending')]}"
+                    />
+                    <button 
+                        name="action_quarantine_product" 
+                        type="object"
+                        string="🚫 Quarantine"
+                        class="btn-warning"
+                        attrs="{'invisible': [('quality_status', '=', 'quarantine')]}"
+                    />
+                </xpath>
+                
+                <!-- Add quality info to chatter -->
+                <xpath expr="//div[hasclass('o_Chatter')]" position="before">
+                    <div class="alert" 
+                         attrs="{'invisible': [('quality_check_required', '=', False)]}"
+                         t-attf-class="alert-{{ 'warning' if quality_status == 'pending' else 'success' if quality_status == 'passed' else 'danger' }}">
+                        <i class="fa fa-clipboard-check me-2"></i>
+                        <strong>Quality Control:</strong>
+                        <span t-esc="record.quality_status.value"></span>
+                        <t t-if="record.quality_check_date.value">
+                            (Checked: <t t-esc="record.quality_check_date.value"></t>)
+                        </t>
+                    </div>
+                </xpath>
+                
+            </field>
+        </record>
+        
+        <!-- Extend stock.move list view -->
+        <record id="view_stock_move_tree_custom" model="ir.ui.view">
+            <field name="name">stock.move.tree.custom</field>
+            <field name="model">stock.move</field>
+            <field name="inherit_id" ref="stock.view_move_tree"/>
+            <field name="arch" type="xml">
+                
+                <!-- Add quality columns -->
+                <xpath expr="//field[@name='product_uom_qty']" position="after">
+                    <field name="quality_check_required" widget="boolean_toggle"/>
+                    <field name="quality_status" widget="badge"
+                           options="{'color_field': 'quality_status_color'}"/>
+                </xpath>
+                
+                <!-- Add quality filters -->
+                <xpath expr="//search" position="inside">
+                    <filter name="filter_quality_required" string="Quality Check Required" 
+                            domain="[('quality_check_required', '=', True)]"/>
+                    <filter name="filter_quality_pending" string="Pending Quality Check" 
+                            domain="[('quality_check_required', '=', True), ('quality_status', '=', 'pending')]"/>
+                    <filter name="filter_quarantine" string="Quarantined" 
+                            domain="[('quality_status', '=', 'quarantine')]"/>
+                    
+                    <separator/>
+                    
+                    <filter name="group_quality" string="Quality Status" 
+                            context="{'group_by': 'quality_status'}"/>
+                </xpath>
+                
+            </field>
+        </record>
+        
+        <!-- Add quality control to picking form -->
+        <record id="view_picking_form_quality" model="ir.ui.view">
+            <field name="name">stock.picking.form.quality</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form"/>
+            <field name="arch" type="xml">
+                
+                <!-- Add quality summary to picking -->
+                <xpath expr="//field[@name='move_ids']" position="before">
+                    <div class="alert alert-info" role="alert"
+                         attrs="{'invisible': [('move_ids.quality_check_required', '=', False)]}">
+                        <i class="fa fa-clipboard-check me-2"></i>
+                        <strong>Quality Control Summary:</strong>
+                        <span t-esc="len(record.move_ids.filtered(lambda m: m.quality_check_required))"></span>
+                        moves require quality check
+                    </div>
+                </xpath>
+                
+            </field>
+        </record>
+        
+    </data>
+</odoo>

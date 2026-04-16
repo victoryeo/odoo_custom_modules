@@ -1,57 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <!-- OPTION 1: Add after default_code (which is right before barcode) -->
-        <record id="view_product_form_custom_default_code" model="ir.ui.view">
-            <field name="name">product.product.form.custom.default_code</field>
-            <field name="model">product.product</field>
-            <field name="inherit_id" ref="product.product_normal_form_view"/>
-            <field name="priority">100</field>
+        <record id="view_product_template_form_storage" model="ir.ui.view">
+            <field name="name">product.template.form.storage</field>
+            <field name="model">product.template</field>  <!-- Changed from product.product -->
+            <field name="inherit_id" ref="product.product_template_form_view"/>  <!-- Changed reference -->
+            <field name="priority">50</field>  <!-- Lower priority to ensure it loads -->
             <field name="arch" type="xml">
-                <!-- Add storage fields after default_code field -->
-                <xpath expr="//field[@name='default_code']" position="after">
-                    <group string="Storage Requirements">
-                        <field name="storage_temperature" widget="radio"/>
-                        <field name="shelf_life_days"/>
-                        <field name="minimum_stock_level"/>
-                        <field name="maximum_stock_level"/>
-                        <field name="warehouse_notes"/>
-                    </group>
+                <!-- Add a new tab in the notebook -->
+                <xpath expr="//notebook" position="inside">
+                    <page name="storage" string="Storage" invisible="type == 'service'">
+                        <group>
+                            <group string="Temperature Requirements">
+                                <field name="storage_temperature" widget="radio"/>
+                                <field name="shelf_life_days"/>
+                            </group>
+                            <group string="Stock Levels">
+                                <field name="minimum_stock_level"/>
+                                <field name="maximum_stock_level"/>
+                            </group>
+                            <group string="Warehouse Instructions" colspan="2">
+                                <field name="warehouse_notes" nolabel="1" placeholder="Special handling instructions..."/>
+                            </group>
+                        </group>
+                    </page>
                 </xpath>
             </field>
         </record>
-        
-        <!-- OPTION 2: Add inside the same div as default_code and barcode -->
-        <record id="view_product_form_custom_uom_div" model="ir.ui.view">
-            <field name="name">product.product.form.custom.uom_div</field>
-            <field name="model">product.product</field>
-            <field name="inherit_id" ref="product.product_normal_form_view"/>
-            <field name="priority">90</field>
-            <field name="arch" type="xml">
-                <!-- Add to the div that contains default_code and barcode -->
-                <xpath expr="//div[@name='standard_price_uom']" position="after">
-                    <group string="Storage Info">
-                        <field name="storage_temperature"/>
-                        <field name="shelf_life_days"/>
-                    </group>
-                </xpath>
-            </field>
-        </record>
-        
-        <!-- OPTION 3: Simple placement after list_price -->
-        <record id="view_product_form_custom_list_price" model="ir.ui.view">
-            <field name="name">product.product.form.custom.list_price</field>
-            <field name="model">product.product</field>
-            <field name="inherit_id" ref="product.product_normal_form_view"/>
-            <field name="priority">80</field>
-            <field name="arch" type="xml">
-                <!-- Simple: after list_price field -->
-                <field name="list_price" position="after">
-                    <field name="storage_temperature"/>
-                    <field name="shelf_life_days"/>
-                </field>
-            </field>
-        </record>
-        
     </data>
 </odoo>

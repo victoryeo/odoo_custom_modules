@@ -12,7 +12,7 @@
     """,
     'author': 'Victor',
     'website': 'https://yourwebsite.com',
-    'depends': ['stock', 'sale_stock', 'purchase_stock'],
+    'depends': ['sale', 'stock', 'sale_stock', 'purchase_stock'],
     'data': [
         #'views/product_views_temp.xml',
         'views/product_views.xml',
